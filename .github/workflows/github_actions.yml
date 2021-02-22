@@ -12,6 +12,8 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        ref: ${{ github.head_ref }}
     
     - name: debug current branch
       run: echo ${{ github.head_ref }}
