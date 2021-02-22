@@ -1,7 +1,7 @@
 # Create a BootStrap S3 Bucket
 
 resource "aws_s3_bucket" "bootstrap_bucket2" {
-  bucket        = "${var.bootstrap_s3bucket2}"
+  bucket        = var.bootstrap_s3bucket2
   acl           = "private"
   force_destroy = true
 
@@ -12,35 +12,35 @@ resource "aws_s3_bucket" "bootstrap_bucket2" {
 
 # Create Folders and Upload Bootstrap Files
 resource "aws_s3_bucket_object" "bootstrap_xml2" {
-  bucket = "${aws_s3_bucket.bootstrap_bucket2.id}"
+  bucket = aws_s3_bucket.bootstrap_bucket2.id
   acl    = "private"
   key    = "config/bootstrap.xml"
   source = "bootstrap_files2/bootstrap.xml"
 }
 
 resource "aws_s3_bucket_object" "init-cft_txt2" {
-  bucket = "${aws_s3_bucket.bootstrap_bucket2.id}"
+  bucket = aws_s3_bucket.bootstrap_bucket2.id
   acl    = "private"
   key    = "config/init-cfg.txt"
   source = "bootstrap_files2/init-cfg.txt"
 }
 
 resource "aws_s3_bucket_object" "software2" {
-  bucket = "${aws_s3_bucket.bootstrap_bucket2.id}"
+  bucket = aws_s3_bucket.bootstrap_bucket2.id
   acl    = "private"
   key    = "software/"
   source = "/dev/null"
 }
 
 resource "aws_s3_bucket_object" "license2" {
-  bucket = "${aws_s3_bucket.bootstrap_bucket2.id}"
+  bucket = aws_s3_bucket.bootstrap_bucket2.id
   acl    = "private"
   key    = "license/authcodes"
   source = "bootstrap_files2/authcodes"
 }
 
 resource "aws_s3_bucket_object" "content2" {
-  bucket = "${aws_s3_bucket.bootstrap_bucket2.id}"
+  bucket = aws_s3_bucket.bootstrap_bucket2.id
   acl    = "private"
   key    = "content/"
   source = "/dev/null"
@@ -69,7 +69,7 @@ EOF
 
 resource "aws_iam_role_policy" "bootstrap_policy2" {
   name = "ngfw_bootstrap_policy2"
-  role = "${aws_iam_role.bootstrap_role2.id}"
+  role = aws_iam_role.bootstrap_role2.id
 
   policy = <<EOF
 {
@@ -92,6 +92,6 @@ EOF
 
 resource "aws_iam_instance_profile" "bootstrap_profile2" {
   name = "ngfw_bootstrap_profile2"
-  role = "${aws_iam_role.bootstrap_role2.name}"
+  role = aws_iam_role.bootstrap_role2.name
   path = "/"
 }

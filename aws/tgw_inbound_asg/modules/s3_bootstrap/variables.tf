@@ -1,26 +1,26 @@
-variable bucket_name {}
-variable bucket_name_random {}
-variable file_location {}
+variable "bucket_name" {}
+variable "bucket_name_random" {}
+variable "file_location" {}
 
-variable config {
-  type    = "list"
+variable "config" {
+  type    = list(string)
   default = []
 }
 
-variable content {
-  type    = "list"
+variable "content" {
+  type    = list(string)
   default = []
 }
 
-variable license {
-  type    = "list"
+variable "license" {
+  type    = list(string)
   default = []
 }
 
-variable software {
+variable "software" {
   default = []
 }
 
-variable other {
+variable "other" {
   default = []
 }

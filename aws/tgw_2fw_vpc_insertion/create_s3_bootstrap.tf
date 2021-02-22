@@ -9,13 +9,13 @@ resource "random_string" "randomstring" {
 }
 
 resource "aws_s3_bucket" "bootstrap_bucket_fw1" {
-  bucket        = "${join("", list(var.bootstrap_s3bucket1_create, "-", random_string.randomstring.result))}"
+  bucket        = join("", list(var.bootstrap_s3bucket1_create, "-", random_string.randomstring.result))
   acl           = "private"
   force_destroy = true
 }
 
 resource "aws_s3_bucket" "bootstrap_bucket_fw2" {
-  bucket        = "${join("", list(var.bootstrap_s3bucket2_create, "-", random_string.randomstring.result))}"
+  bucket        = join("", list(var.bootstrap_s3bucket2_create, "-", random_string.randomstring.result))
   acl           = "private"
   force_destroy = true
 }
@@ -25,35 +25,35 @@ resource "aws_s3_bucket" "bootstrap_bucket_fw2" {
 # CREATE FW1 DIRECTORIES & UPLOAD FILES FROM /bootstrap_files/fw1 DIRECTORY
 #************************************************************************************
 resource "aws_s3_bucket_object" "bootstrap_xml" {
-  bucket = "${aws_s3_bucket.bootstrap_bucket_fw1.id}"
+  bucket = aws_s3_bucket.bootstrap_bucket_fw1.id
   acl    = "private"
   key    = "config/bootstrap.xml"
   source = "bootstrap_files/fw1/bootstrap.xml"
 }
 
 resource "aws_s3_bucket_object" "init-cft_txt" {
-  bucket = "${aws_s3_bucket.bootstrap_bucket_fw1.id}"
+  bucket = aws_s3_bucket.bootstrap_bucket_fw1.id
   acl    = "private"
   key    = "config/init-cfg.txt"
   source = "bootstrap_files/fw1/init-cfg.txt"
 }
 
 resource "aws_s3_bucket_object" "software" {
-  bucket = "${aws_s3_bucket.bootstrap_bucket_fw1.id}"
+  bucket = aws_s3_bucket.bootstrap_bucket_fw1.id
   acl    = "private"
   key    = "software/"
   source = "/dev/null"
 }
 
 resource "aws_s3_bucket_object" "license" {
-  bucket = "${aws_s3_bucket.bootstrap_bucket_fw1.id}"
+  bucket = aws_s3_bucket.bootstrap_bucket_fw1.id
   acl    = "private"
   key    = "license/authcodes"
   source = "bootstrap_files/fw1/authcodes"
 }
 
 resource "aws_s3_bucket_object" "content" {
-  bucket = "${aws_s3_bucket.bootstrap_bucket_fw1.id}"
+  bucket = aws_s3_bucket.bootstrap_bucket_fw1.id
   acl    = "private"
   key    = "content/"
   source = "/dev/null"
@@ -64,35 +64,35 @@ resource "aws_s3_bucket_object" "content" {
 # CREATE FW2 DIRECTORIES & UPLOAD FILES FROM /bootstrap_files/fw2 DIRECTORY
 #************************************************************************************
 resource "aws_s3_bucket_object" "bootstrap_xml2" {
-  bucket = "${aws_s3_bucket.bootstrap_bucket_fw2.id}"
+  bucket = aws_s3_bucket.bootstrap_bucket_fw2.id
   acl    = "private"
   key    = "config/bootstrap.xml"
   source = "bootstrap_files/fw2/bootstrap.xml"
 }
 
 resource "aws_s3_bucket_object" "init-cft_txt2" {
-  bucket = "${aws_s3_bucket.bootstrap_bucket_fw2.id}"
+  bucket = aws_s3_bucket.bootstrap_bucket_fw2.id
   acl    = "private"
   key    = "config/init-cfg.txt"
   source = "bootstrap_files/fw2/init-cfg.txt"
 }
 
 resource "aws_s3_bucket_object" "software2" {
-  bucket = "${aws_s3_bucket.bootstrap_bucket_fw2.id}"
+  bucket = aws_s3_bucket.bootstrap_bucket_fw2.id
   acl    = "private"
   key    = "software/"
   source = "/dev/null"
 }
 
 resource "aws_s3_bucket_object" "license2" {
-  bucket = "${aws_s3_bucket.bootstrap_bucket_fw2.id}"
+  bucket = aws_s3_bucket.bootstrap_bucket_fw2.id
   acl    = "private"
   key    = "license/authcodes"
   source = "bootstrap_files/fw2/authcodes"
 }
 
 resource "aws_s3_bucket_object" "content2" {
-  bucket = "${aws_s3_bucket.bootstrap_bucket_fw2.id}"
+  bucket = aws_s3_bucket.bootstrap_bucket_fw2.id
   acl    = "private"
   key    = "content/"
   source = "/dev/null"
@@ -123,7 +123,7 @@ EOF
 
 resource "aws_iam_role_policy" "bootstrap_policy" {
   name = "ngfw_bootstrap_policy"
-  role = "${aws_iam_role.bootstrap_role.id}"
+  role = aws_iam_role.bootstrap_role.id
 
   policy = <<EOF
 {
@@ -156,6 +156,6 @@ EOF
 
 resource "aws_iam_instance_profile" "bootstrap_profile" {
   name = "ngfw_bootstrap_profile"
-  role = "${aws_iam_role.bootstrap_role.name}"
+  role = aws_iam_role.bootstrap_role.name
   path = "/"
 }

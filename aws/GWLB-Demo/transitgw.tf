@@ -18,9 +18,9 @@ resource "aws_ec2_transit_gateway" "panw-tgw" {
 }
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "as" {
-  subnet_ids = aws_subnet.sec_tgwa_subnet[*].id
-  transit_gateway_id = aws_ec2_transit_gateway.panw-tgw.id
-  vpc_id = aws_vpc.sec_vpc.id
+  subnet_ids                                      = aws_subnet.sec_tgwa_subnet[*].id
+  transit_gateway_id                              = aws_ec2_transit_gateway.panw-tgw.id
+  vpc_id                                          = aws_vpc.sec_vpc.id
   transit_gateway_default_route_table_association = "false"
   transit_gateway_default_route_table_propagation = "false"
   tags = {

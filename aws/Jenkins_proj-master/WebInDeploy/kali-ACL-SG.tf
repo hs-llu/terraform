@@ -1,5 +1,5 @@
 resource "aws_network_acl" "all-kali" {
-  vpc_id = "${aws_vpc.kali.id}"
+  vpc_id = aws_vpc.kali.id
 
   egress {
     protocol   = "-1"
@@ -28,7 +28,7 @@ resource "aws_network_acl" "all-kali" {
 resource "aws_security_group" "kaliWideOpen" {
   name        = "kaliWideOpen"
   description = "Wide open security group"
-  vpc_id      = "${aws_vpc.kali.id}"
+  vpc_id      = aws_vpc.kali.id
 
   ingress {
     from_port   = "22"
@@ -39,10 +39,10 @@ resource "aws_security_group" "kaliWideOpen" {
 
   ingress {
     from_port = "443"
-    to_port = "443"
-    protocol = "tcp"
+    to_port   = "443"
+    protocol  = "tcp"
     cidr_blocks = [
-      "0.0.0.0/0"]
+    "0.0.0.0/0"]
   }
 
   ingress {

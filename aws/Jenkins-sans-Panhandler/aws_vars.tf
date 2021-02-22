@@ -25,29 +25,29 @@ variable "attacker_initscript_path" {}
 
 #VMSeries 8.1 Bundle 2 Paygo 
 variable "PANFWRegionMap" {
-  type = "map"
+  type = map(string)
 
   default = {
-    "ap-northeast-1"  = "ami-0c2df2ad98fa740f2"
-    "ap-northeast-2"  = "ami-0644fb0e02257e3e0"
-    "ap-south-1"      = "ami-0f03c2e41c35f4155"
-    "ap-southeast-1"  = "ami-0c18d932bcd6eb39f"
-    "ap-southeast-2"  = "ami-0b6f63cee6e82b6b1"
-    "ca-central-1"    = "ami-09ccdba2948398b45"
-    "eu-central-1"    = "ami-0cf748c2bf505e674"
-    "eu-north-1"      = "ami-0b5ba14c2b9ccb9b6"
-    "eu-west-1"       = "ami-02eec133b97eaa1e1"
-    "eu-west-2"       = "ami-0c06868bcef1d35ba"
-    "sa-east-1"       = "ami-08a812daea4ede4a2"
-    "us-east-1"       = "ami-07c7f3e5ce94b86cd"
-    "us-east-2"       = "ami-05025aa19e768421d"
-    "us-west-1"       = "ami-0ba71b23bb2d76fa1"
-    "us-west-2"       = "ami-074c89c1e945ede8a"
+    "ap-northeast-1" = "ami-0c2df2ad98fa740f2"
+    "ap-northeast-2" = "ami-0644fb0e02257e3e0"
+    "ap-south-1"     = "ami-0f03c2e41c35f4155"
+    "ap-southeast-1" = "ami-0c18d932bcd6eb39f"
+    "ap-southeast-2" = "ami-0b6f63cee6e82b6b1"
+    "ca-central-1"   = "ami-09ccdba2948398b45"
+    "eu-central-1"   = "ami-0cf748c2bf505e674"
+    "eu-north-1"     = "ami-0b5ba14c2b9ccb9b6"
+    "eu-west-1"      = "ami-02eec133b97eaa1e1"
+    "eu-west-2"      = "ami-0c06868bcef1d35ba"
+    "sa-east-1"      = "ami-08a812daea4ede4a2"
+    "us-east-1"      = "ami-07c7f3e5ce94b86cd"
+    "us-east-2"      = "ami-05025aa19e768421d"
+    "us-west-1"      = "ami-0ba71b23bb2d76fa1"
+    "us-west-2"      = "ami-074c89c1e945ede8a"
   }
 }
 
 variable "UbuntuRegionMap" {
-  type = "map"
+  type = map(string)
 
   #Ubuntu Server 16.04 LTS (HVM)
   default = {
@@ -69,5 +69,5 @@ variable "UbuntuRegionMap" {
 }
 
 variable "ip_blacklist" {
-  type = "list"
+  type = list(string)
 }

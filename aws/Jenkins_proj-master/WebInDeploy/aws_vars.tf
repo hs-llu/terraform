@@ -25,7 +25,7 @@ variable "kali_AZ1_attack" {}
 
 #VMSeries 8.1 Bundle 2 Paygo 
 variable "PANFWRegionMap" {
-  type = "map"
+  type = map(string)
 
   default = {
     "us-east-1"      = "ami-0c21b9d4f6c321d91"
@@ -46,7 +46,7 @@ variable "PANFWRegionMap" {
 }
 
 variable "kali" {
-  type = "map"
+  type = map(string)
 
   default = {
     "us-west-1"      = "ami-0a3a5bb61a81e3135"
@@ -67,7 +67,7 @@ variable "kali" {
 }
 
 variable "UbuntuRegionMap" {
-  type = "map"
+  type = map(string)
 
   #Ubuntu Server 16.04 LTS (HVM)
   default = {

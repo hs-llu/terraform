@@ -23,7 +23,7 @@ variable "ServerKeyName" {}
 
 #VMSeries 9.0.3-xfr BYOL 
 variable "PANFWRegionMap" {
-  type = "map"
+  type = map(string)
 
   default = {
     "ap-northeast-1" = "ami-04bd06018d53fd939"
@@ -60,7 +60,7 @@ variable "PANFWRegionMap" {
   }
 }
 variable "PanoramaRegionMap" {
-  type = "map"
+  type = map(string)
   #Panorama 9.0.5
   default = {
     "ap-northeast-1" = "ami-08e8bded936bbd795"
@@ -97,25 +97,25 @@ variable "PanoramaRegionMap" {
   }
 }
 variable "UbuntuRegionMap" {
-  type = "map"
+  type = map(string)
 
   #Ubuntu Server 18.04 LTS (HVM)
   default = {
     "ap-northeast-1" = "ami-014cc8d7cb6d26dc8"
     "ap-northeast-2" = "ami-004b3430b806f3b1a"
-    "ap-south-1" = "ami-0f59afa4a22fad2f0"
+    "ap-south-1"     = "ami-0f59afa4a22fad2f0"
     "ap-southeast-1" = "ami-08b3278ea6e379084"
     "ap-southeast-2" = "ami-00d7116c396e73b04"
-    "ca-central-1" = "ami-0086bcfbab4b22f60"
-    "eu-central-1" = "ami-0062c497b55437b01"
-    "eu-north-1" = "ami-0ca3b50bc99a41773"
-    "eu-west-1" = "ami-0987ee37af7792903"
-    "eu-west-2" = "ami-05945867d79b7d926"
-    "eu-west-3" = "ami-00c60f4df93ff408e"
-    "sa-east-1" = "ami-0fb487b6f6ab53ff"
-    "us-east-1" = "ami-09f9d773751b9d606"
-    "us-east-2" = "ami-0891395d749676c2e"
-    "us-west-1" = "ami-0c0e5a396959508b0"
-    "us-west-2" = "ami-0bbe9b07c5fe8e86e"
+    "ca-central-1"   = "ami-0086bcfbab4b22f60"
+    "eu-central-1"   = "ami-0062c497b55437b01"
+    "eu-north-1"     = "ami-0ca3b50bc99a41773"
+    "eu-west-1"      = "ami-0987ee37af7792903"
+    "eu-west-2"      = "ami-05945867d79b7d926"
+    "eu-west-3"      = "ami-00c60f4df93ff408e"
+    "sa-east-1"      = "ami-0fb487b6f6ab53ff"
+    "us-east-1"      = "ami-09f9d773751b9d606"
+    "us-east-2"      = "ami-0891395d749676c2e"
+    "us-west-1"      = "ami-0c0e5a396959508b0"
+    "us-west-2"      = "ami-0bbe9b07c5fe8e86e"
   }
 }
