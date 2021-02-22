@@ -12,7 +12,7 @@ resource "aws_ec2_transit_gateway" "tgw" {
 }
 
 resource "aws_ec2_transit_gateway_route_table" "tgw_security" {
-  transit_gateway_id = "${aws_ec2_transit_gateway.tgw.id}"
+  transit_gateway_id = aws_ec2_transit_gateway.tgw.id
 
   tags = {
     Name = "security-tgw-rtb"
@@ -20,10 +20,10 @@ resource "aws_ec2_transit_gateway_route_table" "tgw_security" {
 }
 
 resource "aws_ec2_transit_gateway_route_table" "tgw_spokes" {
-  transit_gateway_id = "${aws_ec2_transit_gateway.tgw.id}"
+  transit_gateway_id = aws_ec2_transit_gateway.tgw.id
 
   tags = {
-    Name = "spokes-tgw-rtb"
+    Name        = "spokes-tgw-rtb"
     Propagation = "NS"
   }
 }

@@ -1,6 +1,6 @@
 resource "aws_wafv2_web_acl" "waf_acl" {
-  name        = "owasp_and_then_some"
-  scope       = "REGIONAL"
+  name  = "owasp_and_then_some"
+  scope = "REGIONAL"
 
   default_action {
     allow {}

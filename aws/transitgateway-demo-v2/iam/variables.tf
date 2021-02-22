@@ -6,13 +6,13 @@ variable "name" {
 variable "path" {
   description = "The path of the policy in IAM"
 
-  default     = "/"
+  default = "/"
 }
 
 variable "description" {
   description = "The description of the policy"
 
-  default     = "IAM Policy"
+  default = "IAM Policy"
 }
 
 variable "policy" {

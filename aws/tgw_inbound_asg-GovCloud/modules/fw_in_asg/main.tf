@@ -32,13 +32,13 @@ EOF
 
 resource "aws_iam_instance_profile" "FirewallBootstrapInstanceProfile" {
   name = "${var.tag}-FirewallInstanceProfile-${random_string.randomstring.result}"
-  role = "${aws_iam_role.FirewallBootstrapRole.name}"
+  role = aws_iam_role.FirewallBootstrapRole.name
   path = "/"
 }
 
 resource "aws_iam_role_policy" "FirewallBootstrapRolePolicy" {
   name = "${var.tag}-FirewallRolePolicy-${random_string.randomstring.result}"
-  role = "${aws_iam_role.FirewallBootstrapRole.id}"
+  role = aws_iam_role.FirewallBootstrapRole.id
 
   depends_on = [
     "null_resource.dependency_getter",
@@ -86,7 +86,7 @@ EOF
 
 resource "aws_iam_role_policy" "LambdaExecutionRolePolicy" {
   name = "${var.tag}-LambdaExecutionRolePolicy-${random_string.randomstring.result}"
-  role = "${aws_iam_role.LambdaExecutionRole.id}"
+  role = aws_iam_role.LambdaExecutionRole.id
 
   depends_on = [
     "null_resource.dependency_getter",
@@ -287,9 +287,9 @@ EOF
 resource "aws_lambda_function" "FwInit" {
   function_name = "${var.tag}-FwInit-${random_string.randomstring.result}"
   handler       = "fw_init.lambda_handler"
-  role          = "${aws_iam_role.LambdaExecutionRole.arn}"
-  s3_bucket     = "${var.lambda_bucket}"
-  s3_key        = "${var.KeyMap["Key"]}"
+  role          = aws_iam_role.LambdaExecutionRole.arn
+  s3_bucket     = var.lambda_bucket
+  s3_key        = var.KeyMap["Key"]
   runtime       = "python2.7"
   timeout       = "300"
 
@@ -320,8 +320,8 @@ resource "aws_sns_topic" "LambdaENISNSTopic" {
 }
 
 resource "aws_sns_topic_subscription" "LambdaENISNSTopicSubscription" {
-  topic_arn = "${aws_sns_topic.LambdaENISNSTopic.arn}"
-  endpoint  = "${aws_lambda_function.FwInit.arn}"
+  topic_arn = aws_sns_topic.LambdaENISNSTopic.arn
+  endpoint  = aws_lambda_function.FwInit.arn
   protocol  = "lambda"
 
   depends_on = [
@@ -332,9 +332,9 @@ resource "aws_sns_topic_subscription" "LambdaENISNSTopicSubscription" {
 resource "aws_lambda_permission" "LambdaENIPermission" {
   statement_id  = "ProvideLambdawithPermissionstoSNS"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.FwInit.arn}"
+  function_name = aws_lambda_function.FwInit.arn
   principal     = "sns.amazonaws.com"
-  source_arn    = "${aws_sns_topic.LambdaENISNSTopic.arn}"
+  source_arn    = aws_sns_topic.LambdaENISNSTopic.arn
 
   depends_on = [
     "aws_lambda_function.FwInit",
@@ -366,7 +366,7 @@ EOF
 
 resource "aws_iam_role_policy" "ASGNotifierRolePolicy" {
   name = "${var.tag}-ASGNotifierRolePolicy-${random_string.randomstring.result}"
-  role = "${aws_iam_role.ASGNotifierRole.id}"
+  role = aws_iam_role.ASGNotifierRole.id
 
   depends_on = [
     "aws_sns_topic.LambdaENISNSTopic",
@@ -387,9 +387,9 @@ EOF
 resource "aws_lambda_function" "InitLambda" {
   function_name = "${var.tag}-InitLambda-${random_string.randomstring.result}"
   handler       = "init.lambda_handler"
-  role          = "${aws_iam_role.LambdaExecutionRole.arn}"
-  s3_bucket     = "${var.lambda_bucket}"
-  s3_key        = "${var.KeyMap["Key"]}"
+  role          = aws_iam_role.LambdaExecutionRole.arn
+  s3_bucket     = var.lambda_bucket
+  s3_key        = var.KeyMap["Key"]
   runtime       = "python2.7"
   timeout       = "300"
 
@@ -400,7 +400,7 @@ resource "aws_lambda_function" "InitLambda" {
 }
 
 resource "aws_security_group" "PublicLoadBalancerSecurityGroup" {
-  vpc_id      = "${var.vpc_id}"
+  vpc_id      = var.vpc_id
   description = "Public ELB security group"
 
   ingress {
@@ -453,22 +453,22 @@ resource "aws_lb_target_group" "PublicLoadBalancerTargetGroup" {
 
   port     = 81
   protocol = "HTTP"
-  vpc_id   = "${var.vpc_id}"
+  vpc_id   = var.vpc_id
 }
 
 resource "aws_lb_listener" "PublicLoadBanlancerListener" {
-  load_balancer_arn = "${aws_lb.PublicLoadBalancer.arn}"
+  load_balancer_arn = aws_lb.PublicLoadBalancer.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = "${aws_lb_target_group.PublicLoadBalancerTargetGroup.arn}"
+    target_group_arn = aws_lb_target_group.PublicLoadBalancerTargetGroup.arn
   }
 }
 
 resource "aws_security_group" "mgmt" {
-  vpc_id      = "${var.vpc_id}"
+  vpc_id      = var.vpc_id
   description = "Security Group assigned to VM-Series management ENI"
 
   ingress {
@@ -491,7 +491,7 @@ resource "aws_security_group" "mgmt" {
 }
 
 resource "aws_security_group" "untrust" {
-  vpc_id      = "${var.vpc_id}"
+  vpc_id      = var.vpc_id
   description = "Security Group assigned to VM-Series untrust ENI"
 
   ingress {
@@ -514,7 +514,7 @@ resource "aws_security_group" "untrust" {
 }
 
 resource "aws_security_group" "trust" {
-  vpc_id      = "${var.vpc_id}"
+  vpc_id      = var.vpc_id
   description = "Security Group assigned to VM-Series trust ENI"
 
   ingress {
@@ -541,47 +541,47 @@ resource "aws_cloudformation_stack" "LambdaCustomResource" {
   depends_on = ["aws_lambda_function.FwInit", "aws_lambda_function.InitLambda", "null_resource.dependency_getter"]
 
   parameters {
-    InitLambdaArn                    = "${aws_lambda_function.InitLambda.arn}"
-    StackName                        = "${var.tag}"
-    Region                           = "${var.region}"
-    VPCID                            = "${var.vpc_id}"
-    MGMTSubnetAz1                    = "${join(",", var.fw_subnet0_id)}"
-    UNTRUSTSubnetAz1                 = "${join(",", var.fw_subnet1_id)}"
-    TRUSTSubnetAz1                   = "${join(",", var.fw_subnet2_id)}"
-    MgmtSecurityGroup                = "${aws_security_group.mgmt.id}"
-    UntrustSecurityGroup             = "${aws_security_group.untrust.id}"
-    TrustSecurityGroup               = "${aws_security_group.trust.id}"
-    VPCSecurityGroup                 = "${var.vpc_sg_id}"
-    KeyName                          = "${var.fw_key_name}"
-    ELBName                          = "${aws_lb.PublicLoadBalancer.id}"
-    ELBTargetGroupName               = "${aws_lb_target_group.PublicLoadBalancerTargetGroup.name}"
-    FWInstanceType                   = "${var.fw_vm_type}"
-    SSHLocation                      = "${var.fw_sg_source}"
-    MinInstancesASG                  = "${var.fw_min_instances}"
-    MaximumInstancesASG              = "${var.fw_max_instances}"
-    ScaleUpThreshold                 = "${var.fw_scale_threshold_up}"
-    ScaleDownThreshold               = "${var.fw_scale_threshold_down}"
-    ScalingParameter                 = "${var.fw_scale_parameter}"
-    ScalingPeriod                    = "${var.fw_scale_period}"
-    PanFwAmiId                       = "${var.fw_ami}"
-    LambdaENISNSTopic                = "${aws_sns_topic.LambdaENISNSTopic.id}"
-    FirewallBootstrapInstanceProfile = "${aws_iam_instance_profile.FirewallBootstrapInstanceProfile.id}"
-    LambdaExecutionRole              = "${aws_iam_role.LambdaExecutionRole.id}"
-    ASGNotifierRole                  = "${aws_iam_role.ASGNotifierRole.arn}"
-    ASGNotifierRolePolicy            = "${aws_iam_role_policy.ASGNotifierRolePolicy.id}"
-    BootstrapS3Bucket                = "${var.fw_bucket}"
-    LambdaS3Bucket                   = "${var.lambda_bucket}"
-    PanS3KeyTpl                      = "${var.KeyMap["Key"]}"
-    KeyPANWFirewall                  = "${var.api_key_firewall}"
-    KeyPANWPanorama                  = "${var.api_key_panorama}"
-    NATGWSubnetAz1                   = "${join(",", var.natgw_subnet_id)}"
-    LambdaSubnetAz1                  = "${join(",", var.lambda_subnet_id)}"
-    FwInit                           = "${aws_lambda_function.FwInit.id}"
-    InitLambda                       = "${aws_lambda_function.InitLambda.id}"
-    KeyDeLicense                     = "${var.api_key_delicense}"
-    LambdaENIQueue                   = "${aws_sqs_queue.LambdaENIQueue.id}"
-    Debug                            = "${var.enable_debug}"
-    NetworkLoadBalancerQueue         = "${aws_sqs_queue.NetworkLoadBalancerQueue.id}"
+    InitLambdaArn                    = aws_lambda_function.InitLambda.arn
+    StackName                        = var.tag
+    Region                           = var.region
+    VPCID                            = var.vpc_id
+    MGMTSubnetAz1                    = join(",", var.fw_subnet0_id)
+    UNTRUSTSubnetAz1                 = join(",", var.fw_subnet1_id)
+    TRUSTSubnetAz1                   = join(",", var.fw_subnet2_id)
+    MgmtSecurityGroup                = aws_security_group.mgmt.id
+    UntrustSecurityGroup             = aws_security_group.untrust.id
+    TrustSecurityGroup               = aws_security_group.trust.id
+    VPCSecurityGroup                 = var.vpc_sg_id
+    KeyName                          = var.fw_key_name
+    ELBName                          = aws_lb.PublicLoadBalancer.id
+    ELBTargetGroupName               = aws_lb_target_group.PublicLoadBalancerTargetGroup.name
+    FWInstanceType                   = var.fw_vm_type
+    SSHLocation                      = var.fw_sg_source
+    MinInstancesASG                  = var.fw_min_instances
+    MaximumInstancesASG              = var.fw_max_instances
+    ScaleUpThreshold                 = var.fw_scale_threshold_up
+    ScaleDownThreshold               = var.fw_scale_threshold_down
+    ScalingParameter                 = var.fw_scale_parameter
+    ScalingPeriod                    = var.fw_scale_period
+    PanFwAmiId                       = var.fw_ami
+    LambdaENISNSTopic                = aws_sns_topic.LambdaENISNSTopic.id
+    FirewallBootstrapInstanceProfile = aws_iam_instance_profile.FirewallBootstrapInstanceProfile.id
+    LambdaExecutionRole              = aws_iam_role.LambdaExecutionRole.id
+    ASGNotifierRole                  = aws_iam_role.ASGNotifierRole.arn
+    ASGNotifierRolePolicy            = aws_iam_role_policy.ASGNotifierRolePolicy.id
+    BootstrapS3Bucket                = var.fw_bucket
+    LambdaS3Bucket                   = var.lambda_bucket
+    PanS3KeyTpl                      = var.KeyMap["Key"]
+    KeyPANWFirewall                  = var.api_key_firewall
+    KeyPANWPanorama                  = var.api_key_panorama
+    NATGWSubnetAz1                   = join(",", var.natgw_subnet_id)
+    LambdaSubnetAz1                  = join(",", var.lambda_subnet_id)
+    FwInit                           = aws_lambda_function.FwInit.id
+    InitLambda                       = aws_lambda_function.InitLambda.id
+    KeyDeLicense                     = var.api_key_delicense
+    LambdaENIQueue                   = aws_sqs_queue.LambdaENIQueue.id
+    Debug                            = var.enable_debug
+    NetworkLoadBalancerQueue         = aws_sqs_queue.NetworkLoadBalancerQueue.id
   }
 
   template_body = <<STACK

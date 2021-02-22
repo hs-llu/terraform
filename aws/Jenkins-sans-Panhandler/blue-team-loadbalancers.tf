@@ -16,7 +16,7 @@ resource "aws_lb_target_group" "ngfw" {
   name        = "blue-team-ngfw"
   port        = 80
   protocol    = "HTTP"
-  vpc_id      = "${aws_vpc.main.id}"
+  vpc_id      = aws_vpc.main.id
   target_type = "ip"
 
   health_check {
@@ -30,29 +30,29 @@ resource "aws_lb_target_group" "ngfw" {
 }
 
 resource "aws_lb_target_group_attachment" "fw1" {
-  target_group_arn = "${aws_lb_target_group.ngfw.arn}"
-  target_id        = "${aws_network_interface.blue_team_ngfw_untrust.private_ip}"
+  target_group_arn = aws_lb_target_group.ngfw.arn
+  target_id        = aws_network_interface.blue_team_ngfw_untrust.private_ip
   port             = 80
 }
 
 resource "aws_lb_listener" "ngfw-alb" {
-  load_balancer_arn = "${aws_lb.ngfw-alb.arn}"
+  load_balancer_arn = aws_lb.ngfw-alb.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = "${aws_lb_target_group.ngfw.arn}"
+    target_group_arn = aws_lb_target_group.ngfw.arn
     type             = "forward"
   }
 }
 
 resource "aws_lb_listener_rule" "static" {
-  listener_arn = "${aws_lb_listener.ngfw-alb.arn}"
+  listener_arn = aws_lb_listener.ngfw-alb.arn
   priority     = 100
 
   action {
     type             = "forward"
-    target_group_arn = "${aws_lb_target_group.ngfw.arn}"
+    target_group_arn = aws_lb_target_group.ngfw.arn
   }
   condition {
     path_pattern {
@@ -80,7 +80,7 @@ resource "aws_lb_target_group" "blue_team_native" {
   name        = "blue-team-native"
   port        = 8080
   protocol    = "HTTP"
-  vpc_id      = "${aws_vpc.main.id}"
+  vpc_id      = aws_vpc.main.id
   target_type = "ip"
 
   health_check {
@@ -94,29 +94,29 @@ resource "aws_lb_target_group" "blue_team_native" {
 }
 
 resource "aws_lb_target_group_attachment" "server-native" {
-  target_group_arn = "${aws_lb_target_group.blue_team_native.arn}"
-  target_id        = "${aws_network_interface.blue_team_server.private_ip}"
+  target_group_arn = aws_lb_target_group.blue_team_native.arn
+  target_id        = aws_network_interface.blue_team_server.private_ip
   port             = 8080
 }
 
 resource "aws_lb_listener" "native-alb" {
-  load_balancer_arn = "${aws_lb.native-alb.arn}"
+  load_balancer_arn = aws_lb.native-alb.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = "${aws_lb_target_group.blue_team_native.arn}"
+    target_group_arn = aws_lb_target_group.blue_team_native.arn
     type             = "forward"
   }
 }
 
 resource "aws_lb_listener_rule" "static2" {
-  listener_arn = "${aws_lb_listener.native-alb.arn}"
+  listener_arn = aws_lb_listener.native-alb.arn
   priority     = 100
 
   action {
     type             = "forward"
-    target_group_arn = "${aws_lb_target_group.blue_team_native.arn}"
+    target_group_arn = aws_lb_target_group.blue_team_native.arn
   }
   condition {
     path_pattern {

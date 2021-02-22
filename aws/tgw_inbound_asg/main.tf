@@ -15,10 +15,10 @@ Downloads page on https://support.paloaltonetworks.com are provided under the be
 # CREATE INBOUND SECURITY VPC
 module "vpc_in" {
   source       = "./modules/vpc_in/"
-  tag          = "${var.tag}"
-  region       = "${var.region}"
-  tgw_id       = "${var.tgw_id}"
-  tgw_rtb_id   = "${var.tgw_rtb_id}"
+  tag          = var.tag
+  region       = var.region
+  tgw_id       = var.tgw_id
+  tgw_rtb_id   = var.tgw_rtb_id
   cidr_vpc     = "10.255.0.0/16"
   azs          = ["us-east-1a", "us-east-1b"]
   cidr_mgmt    = ["10.255.0.0/28", "10.255.0.16/28"]
@@ -49,24 +49,24 @@ module "s3_in" {
 module "fw_in" {
   source = "./modules/fw_in_asg/"
 
-  tag              = "${var.tag}"
-  region           = "${var.region}"
-  vpc_id           = "${module.vpc_in.vpc_id}"
-  vpc_sg_id        = "${module.vpc_in.default_security_group_id}"
-  lambda_bucket    = "${module.s3_in.bucket_name}"
-  lambda_subnet_id = "${module.vpc_in.lambda_id}"
-  natgw_subnet_id  = "${module.vpc_in.natgw_id}"
+  tag              = var.tag
+  region           = var.region
+  vpc_id           = module.vpc_in.vpc_id
+  vpc_sg_id        = module.vpc_in.default_security_group_id
+  lambda_bucket    = module.s3_in.bucket_name
+  lambda_subnet_id = module.vpc_in.lambda_id
+  natgw_subnet_id  = module.vpc_in.natgw_id
 
-  fw_key_name             = "${var.key_name}"
-  fw_bucket               = "${module.s3_in.bucket_name}"
-  fw_ami                  = "${var.fw_ami}"
+  fw_key_name             = var.key_name
+  fw_bucket               = module.s3_in.bucket_name
+  fw_ami                  = var.fw_ami
   fw_vm_type              = "m4.xlarge"
-  fw_sg_source            = "${var.fw_sg_source}"
-  fw_subnet0_id           = "${module.vpc_in.mgmt_id}"
-  fw_subnet1_id           = "${module.vpc_in.untrust_id}"
-  fw_subnet2_id           = "${module.vpc_in.trust_id}"
-  fw_min_instances        = "1"                           // FOR EACH AZ
-  fw_max_instances        = "2"                           // FOR EACH AZ
+  fw_sg_source            = var.fw_sg_source
+  fw_subnet0_id           = module.vpc_in.mgmt_id
+  fw_subnet1_id           = module.vpc_in.untrust_id
+  fw_subnet2_id           = module.vpc_in.trust_id
+  fw_min_instances        = "1" // FOR EACH AZ
+  fw_max_instances        = "2" // FOR EACH AZ
   fw_scale_threshold_up   = "80"
   fw_scale_threshold_down = "20"
   fw_scale_parameter      = "DataPlaneCPUUtilizationPct"

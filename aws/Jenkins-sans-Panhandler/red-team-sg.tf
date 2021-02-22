@@ -2,7 +2,7 @@
 resource "aws_security_group" "red_team_open" {
   name        = "red_team_open"
   description = "Wide open security group"
-  vpc_id      = "${aws_vpc.red_team.id}"
+  vpc_id      = aws_vpc.red_team.id
 
   ingress {
     from_port   = "22"
@@ -13,10 +13,10 @@ resource "aws_security_group" "red_team_open" {
 
   ingress {
     from_port = "443"
-    to_port = "443"
-    protocol = "tcp"
+    to_port   = "443"
+    protocol  = "tcp"
     cidr_blocks = [
-      "0.0.0.0/0"]
+    "0.0.0.0/0"]
   }
 
   ingress {

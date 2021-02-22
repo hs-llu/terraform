@@ -19,7 +19,7 @@ EOF
 
 resource "aws_iam_role_policy" "hub-fw-bootstrappolicy" {
   name = "hub-fw-bootstrappolicy-${random_id.sdwan.hex}"
-  role = "${aws_iam_role.hub-fw-bootstraprole.id}"
+  role = aws_iam_role.hub-fw-bootstraprole.id
 
   policy = <<EOF
 {
@@ -42,48 +42,48 @@ EOF
 
 resource "aws_iam_instance_profile" "hub-fw-bootstrapinstanceprofile" {
   name = "hub-fw-bootstrapinstanceprofile${random_id.sdwan.hex}"
-  role = "${aws_iam_role.hub-fw-bootstraprole.name}"
+  role = aws_iam_role.hub-fw-bootstraprole.name
   path = "/"
 }
 
 resource "aws_network_interface" "hub-fw-mgt" {
-  subnet_id         = "${aws_subnet.SD-WAN-MGT.id}"
+  subnet_id         = aws_subnet.SD-WAN-MGT.id
   security_groups   = ["${aws_security_group.allow-all.id}"]
   source_dest_check = true
   private_ips       = ["100.64.0.254"]
 }
 
 resource "aws_network_interface" "hub-fw-wan3" {
-  subnet_id         = "${aws_subnet.SD-WAN-WAN3.id}"
+  subnet_id         = aws_subnet.SD-WAN-WAN3.id
   security_groups   = ["${aws_security_group.allow-all.id}"]
   source_dest_check = false
   private_ips       = ["100.64.3.254"]
 }
 
 resource "aws_network_interface" "hub-fw-wan4" {
-  subnet_id         = "${aws_subnet.SD-WAN-WAN4.id}"
+  subnet_id         = aws_subnet.SD-WAN-WAN4.id
   security_groups   = ["${aws_security_group.allow-all.id}"]
   source_dest_check = false
   private_ips       = ["100.64.4.254"]
 }
 
 resource "aws_network_interface" "hub-fw-hub" {
-  subnet_id         = "${aws_subnet.SD-WAN-Hub.id}"
+  subnet_id         = aws_subnet.SD-WAN-Hub.id
   security_groups   = ["${aws_security_group.allow-all.id}"]
   source_dest_check = false
   private_ips       = ["100.64.255.254"]
 }
 
 resource "aws_network_interface" "hub-fw-mpls" {
-  subnet_id         = "${aws_subnet.SD-WAN-MPLS.id}"
+  subnet_id         = aws_subnet.SD-WAN-MPLS.id
   security_groups   = ["${aws_security_group.allow-all.id}"]
   source_dest_check = false
   private_ips       = ["100.64.5.254"]
 }
 
 resource "aws_eip_association" "hub-fw-mgt-Association" {
-  network_interface_id = "${aws_network_interface.hub-fw-mgt.id}"
-  allocation_id        = "${aws_eip.hub-fw-mgt.id}"
+  network_interface_id = aws_network_interface.hub-fw-mgt.id
+  allocation_id        = aws_eip.hub-fw-mgt.id
 }
 
 #Deploys the firewalls
@@ -95,9 +95,9 @@ resource "aws_instance" "hub-fw" {
 
   disable_api_termination = false
 
-  iam_instance_profile = "${aws_iam_instance_profile.hub-fw-bootstrapinstanceprofile.name}"
+  iam_instance_profile = aws_iam_instance_profile.hub-fw-bootstrapinstanceprofile.name
   ebs_optimized        = true
-  ami                  = "${var.SD-WAN-HUB-FW}"
+  ami                  = var.SD-WAN-HUB-FW
   instance_type        = "m5.4xlarge"
   depends_on           = ["aws_internet_gateway.SDWAN-IGW"]
 
@@ -108,32 +108,32 @@ resource "aws_instance" "hub-fw" {
     volume_size           = 60
   }
 
-  key_name   = "${var.ServerKeyName}"
+  key_name   = var.ServerKeyName
   monitoring = false
 
   network_interface {
     device_index         = 0
-    network_interface_id = "${aws_network_interface.hub-fw-mgt.id}"
+    network_interface_id = aws_network_interface.hub-fw-mgt.id
   }
 
   network_interface {
     device_index         = 1
-    network_interface_id = "${aws_network_interface.hub-fw-wan3.id}"
+    network_interface_id = aws_network_interface.hub-fw-wan3.id
   }
 
   network_interface {
     device_index         = 2
-    network_interface_id = "${aws_network_interface.hub-fw-wan4.id}"
+    network_interface_id = aws_network_interface.hub-fw-wan4.id
   }
 
   network_interface {
     device_index         = 3
-    network_interface_id = "${aws_network_interface.hub-fw-hub.id}"
+    network_interface_id = aws_network_interface.hub-fw-hub.id
   }
 
   network_interface {
     device_index         = 4
-    network_interface_id = "${aws_network_interface.hub-fw-mpls.id}"
+    network_interface_id = aws_network_interface.hub-fw-mpls.id
   }
-  user_data = "${base64encode(join("", list("vmseries-bootstrap-aws-s3bucket=", "${aws_s3_bucket.hub-fw-bootstrap-bucket.bucket}")))}"
+  user_data = base64encode(join("", list("vmseries-bootstrap-aws-s3bucket=", "${aws_s3_bucket.hub-fw-bootstrap-bucket.bucket}")))
 }

@@ -13,7 +13,7 @@ resource "aws_lb_target_group" "fw-tg" {
   name        = "fw-tg"
   port        = 80
   protocol    = "HTTP"
-  vpc_id      = "${aws_vpc.main.id}"
+  vpc_id      = aws_vpc.main.id
   target_type = "ip"
 
   health_check {
@@ -27,29 +27,29 @@ resource "aws_lb_target_group" "fw-tg" {
 }
 
 resource "aws_lb_target_group_attachment" "fw1" {
-  target_group_arn = "${aws_lb_target_group.fw-tg.arn}"
-  target_id        = "${aws_network_interface.FW1-UNTRUST.private_ips[0]}"
+  target_group_arn = aws_lb_target_group.fw-tg.arn
+  target_id        = aws_network_interface.FW1-UNTRUST.private_ips[0]
   port             = 80
 }
 
 resource "aws_lb_listener" "panos-alb" {
-  load_balancer_arn = "${aws_lb.panos-alb.arn}"
+  load_balancer_arn = aws_lb.panos-alb.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = "${aws_lb_target_group.fw-tg.arn}"
+    target_group_arn = aws_lb_target_group.fw-tg.arn
     type             = "forward"
   }
 }
 
 resource "aws_lb_listener_rule" "static" {
-  listener_arn = "${aws_lb_listener.panos-alb.arn}"
+  listener_arn = aws_lb_listener.panos-alb.arn
   priority     = 100
 
   action {
     type             = "forward"
-    target_group_arn = "${aws_lb_target_group.fw-tg.arn}"
+    target_group_arn = aws_lb_target_group.fw-tg.arn
   }
 
   condition {
@@ -73,7 +73,7 @@ resource "aws_lb_target_group" "native-tg" {
   name        = "native-tg"
   port        = 8080
   protocol    = "HTTP"
-  vpc_id      = "${aws_vpc.main.id}"
+  vpc_id      = aws_vpc.main.id
   target_type = "ip"
 
   health_check {
@@ -87,29 +87,29 @@ resource "aws_lb_target_group" "native-tg" {
 }
 
 resource "aws_lb_target_group_attachment" "web1a" {
-  target_group_arn = "${aws_lb_target_group.native-tg.arn}"
-  target_id        = "${aws_network_interface.web1-int.private_ips[0]}"
+  target_group_arn = aws_lb_target_group.native-tg.arn
+  target_id        = aws_network_interface.web1-int.private_ips[0]
   port             = 8080
 }
 
 resource "aws_lb_listener" "native-alb" {
-  load_balancer_arn = "${aws_lb.native-alb.arn}"
+  load_balancer_arn = aws_lb.native-alb.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = "${aws_lb_target_group.native-tg.arn}"
+    target_group_arn = aws_lb_target_group.native-tg.arn
     type             = "forward"
   }
 }
 
 resource "aws_lb_listener_rule" "static2" {
-  listener_arn = "${aws_lb_listener.native-alb.arn}"
+  listener_arn = aws_lb_listener.native-alb.arn
   priority     = 100
 
   action {
     type             = "forward"
-    target_group_arn = "${aws_lb_target_group.native-tg.arn}"
+    target_group_arn = aws_lb_target_group.native-tg.arn
   }
 
   condition {
@@ -133,23 +133,23 @@ resource "aws_lb_target_group" "web-tg" {
   name        = "web-tg"
   port        = 8080
   protocol    = "TCP"
-  vpc_id      = "${aws_vpc.main.id}"
+  vpc_id      = aws_vpc.main.id
   target_type = "ip"
 }
 
 resource "aws_lb_target_group_attachment" "web1" {
-  target_group_arn = "${aws_lb_target_group.web-tg.arn}"
-  target_id        = "${aws_network_interface.web1-int.private_ips[0]}"
+  target_group_arn = aws_lb_target_group.web-tg.arn
+  target_id        = aws_network_interface.web1-int.private_ips[0]
   port             = 8080
 }
 
 resource "aws_lb_listener" "int-nlb" {
-  load_balancer_arn = "${aws_lb.int-nlb.arn}"
+  load_balancer_arn = aws_lb.int-nlb.arn
   port              = "8080"
   protocol          = "TCP"
 
   default_action {
-    target_group_arn = "${aws_lb_target_group.web-tg.arn}"
+    target_group_arn = aws_lb_target_group.web-tg.arn
     type             = "forward"
   }
 }

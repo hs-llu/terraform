@@ -2,7 +2,7 @@
 resource "aws_security_group" "blue_team_open" {
   name        = "blue_team_open"
   description = "Wide open security group"
-  vpc_id      = "${aws_vpc.main.id}"
+  vpc_id      = aws_vpc.main.id
 
   ingress {
     from_port   = "0"
@@ -25,7 +25,7 @@ resource "aws_security_group" "blue_team_open" {
 resource "aws_security_group" "webserver" {
   name        = "blue_team_server"
   description = "blue_team web server"
-  vpc_id      = "${aws_vpc.main.id}"
+  vpc_id      = aws_vpc.main.id
 
   ingress {
     from_port   = "8080"

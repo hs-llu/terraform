@@ -1,6 +1,6 @@
 resource "aws_network_acl" "allow-all" {
-  vpc_id = "${aws_vpc.SDWAN.id}"
-  subnet_ids = ["${aws_subnet.SD-WAN-MGT.id}","${aws_subnet.SD-WAN-WAN1.id}","${aws_subnet.SD-WAN-WAN2.id}","${aws_subnet.SD-WAN-WAN3.id}","${aws_subnet.SD-WAN-WAN4.id}","${aws_subnet.SD-WAN-MPLS.id}","${aws_subnet.SD-WAN-Branch25.id}","${aws_subnet.SD-WAN-Branch50.id}","${aws_subnet.SD-WAN-Hub.id}",]
+  vpc_id     = aws_vpc.SDWAN.id
+  subnet_ids = ["${aws_subnet.SD-WAN-MGT.id}", "${aws_subnet.SD-WAN-WAN1.id}", "${aws_subnet.SD-WAN-WAN2.id}", "${aws_subnet.SD-WAN-WAN3.id}", "${aws_subnet.SD-WAN-WAN4.id}", "${aws_subnet.SD-WAN-MPLS.id}", "${aws_subnet.SD-WAN-Branch25.id}", "${aws_subnet.SD-WAN-Branch50.id}", "${aws_subnet.SD-WAN-Hub.id}", ]
 
   egress {
     protocol   = "-1"

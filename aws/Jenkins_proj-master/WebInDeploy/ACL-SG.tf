@@ -3,7 +3,7 @@
 
 #ACLs
 resource "aws_internet_gateway" "gw" {
-  vpc_id = "${aws_vpc.main.id}"
+  vpc_id = aws_vpc.main.id
 
   tags {
     Name = "internet gw terraform generated"
@@ -11,7 +11,7 @@ resource "aws_internet_gateway" "gw" {
 }
 
 resource "aws_network_acl" "all" {
-  vpc_id = "${aws_vpc.main.id}"
+  vpc_id = aws_vpc.main.id
 
   egress {
     protocol   = "-1"
@@ -40,7 +40,7 @@ resource "aws_network_acl" "all" {
 resource "aws_security_group" "sgWideOpen" {
   name        = "sgWideOpen"
   description = "Wide open security group"
-  vpc_id      = "${aws_vpc.main.id}"
+  vpc_id      = aws_vpc.main.id
 
   ingress {
     from_port   = "0"
@@ -60,7 +60,7 @@ resource "aws_security_group" "sgWideOpen" {
 resource "aws_security_group" "webserver" {
   name        = "webserver"
   description = "jenkins web server"
-  vpc_id      = "${aws_vpc.main.id}"
+  vpc_id      = aws_vpc.main.id
 
   ingress {
     from_port   = "8080"
