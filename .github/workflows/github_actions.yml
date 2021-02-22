@@ -12,6 +12,9 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
+    
+    - name: debug current branch
+      run: echo {{ github.head_ref }}
       
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
