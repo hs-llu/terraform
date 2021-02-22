@@ -31,9 +31,9 @@ locals {
 }
 
 resource "null_resource" "handoff-state-json" {
-  provisioner "local-exec" {
-    command = "echo '${local.output_json_str}' > ${data.template_file.handoff-state-file.rendered}"
-  }
+provisioner "local-exec" {
+  command = "echo '${local.output_json_str}' > ${data.template_file.handoff-state-file.rendered}"
+}
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
